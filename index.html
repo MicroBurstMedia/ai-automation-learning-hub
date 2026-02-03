@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unified Simulation Platform</title>
+  <meta name="description" content="Unified index for audio player, classroom mode, simulation modules, compliance footer, and licensing modal.">
+  <style>
+    :root { --bg: #0f172a; --panel: #111827; --muted: #64748b; --text: #e5e7eb; --accent: #22d3ee; --accent-2: #60a5fa; --ok: #22c55e; --warn: #f59e0b; --danger: #ef4444; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; color: var(--text); background: linear-gradient(180deg, #0b1022, #0b1022 200px, #030712 600px); }
+    a { color: var(--accent-2); }
+
+    header { position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(180%) blur(10px); background: rgba(2,6,23,0.7); border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+
+    /* Audio player & narrator */
+    .audio-bar { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
+    .audio-controls { display: flex; gap: 8px; align-items: center; }
+    .audio-controls select, .audio-controls button { background: #0b1220; color: var(--text); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 8px 10px; }
+    .audio-controls select { min-width: 220px; }
+    .audio-controls button:hover { border-color: rgba(255,255,255,0.18); }
+
+    /* Classroom mode */
+    .status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; font-size: 12px; border: 1px solid rgba(255,255,255,0.12); background: #0b1220; }
+    .status-pill[data-active="true"] { border-color: rgba(34,197,94,0.5); background: rgba(34,197,94,0.08); }
+    .toggle-btn { margin-left: 8px; padding: 8px 12px; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; background: #0b1220; color: var(--text); cursor: pointer; }
+    .toggle-btn[aria-pressed="true"] { outline: 2px solid rgba(34,197,94,0.5); }
+
+    main { padding: 24px 0 96px; }
+    .modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+    .module { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; }
+    .module header { position: static; background: transparent; border: 0; padding: 0 0 8px 0; }
+    .module h2 { margin: 0 0 8px 0; font-size: 18px; }
+    .module .placeholder { display: grid; place-items: center; height: 220px; border: 1px dashed rgba(255,255,255,0.12); border-radius: 10px; color: var(--muted); background: rgba(2,6,23,0.35); }
+
+    /* Modals */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 100; }
+    .modal-backdrop[aria-hidden="false"] { display: flex; }
+    .modal { width: min(680px, 92vw); background: #0b1220; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .modal header, .modal footer { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .modal header h3 { margin: 0; font-size: 18px; }
+    .modal .content { padding: 16px; }
+    .modal footer { border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 0; text-align: right; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); background: #0b1220; color: var(--text); cursor: pointer; }
+    .btn.primary { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #061222; border: none; }
+
+    /* Sticky compliance footer */
+    footer.compliance { position: fixed; bottom: 0; left: 0; right: 0; z-index: 60; background: rgba(2,6,23,0.9); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.08); }
+    footer.compliance .container { display: flex; gap: 12px; align-items: center; justify-content: space-between; padding: 10px 16px; }
+    .compliance-text { color: #cbd5e1; font-size: 12px; }
+
+    /* Licensing modal styles reuse .modal */
+
+    /* Utility */
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,1px,1px); white-space: nowrap; border: 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container audio-bar" role="region" aria-label="Audio controls and classroom mode">
+      <div class="audio-controls" aria-label="Audio player">
+        <label for="narrator-select" class="sr-only">Narrator</label>
+        <select id="narrator-select" name="narrator">
+          <option value="narrator-a">Narrator A</option>
+          <option value="narrator-b">Narrator B</option>
+          <option value="narrator-c">Narrator C</option>
+          <option value="narrator-d">Narrator D</option>
+        </select>
+        <audio id="audio-player" preload="none" controls aria-label="Audio playback"></audio>
+      </div>
+      <div class="classroom-controls" aria-label="Classroom mode">
+        <span id="classroom-status" class="status-pill" data-active="false" aria-live="polite">
+          <span aria-hidden="true">●</span>
+          <span>Classroom Mode: Off</span>
+        </span>
+        <button id="classroom-toggle" class="toggle-btn" type="button" aria-pressed="false" aria-controls="classroom-status">Toggle</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="main">
+    <section class="modules" aria-label="Simulation modules">
+      <!-- Module A: System Builder Map -->
+      <section id="module-a" class="module" aria-labelledby="module-a-title">
+        <header>
+          <h2 id="module-a-title">Module A: System Builder Map</h2>
+          <p class="muted">Interactive system mapping workspace</p>
+        </header>
+        <div id="module-a-container" class="placeholder" aria-label="System Builder Map placeholder">
+          System Builder Map will load here
+        </div>
+        <div class="actions" style="margin-top:10px;">
+          <button class="btn" data-open-modal="#modal-a">Open Module A Modal</button>
+        </div>
+      </section>
+
+      <!-- Module B: Decision Checkpoints -->
+      <section id="module-b" class="module" aria-labelledby="module-b-title">
+        <header>
+          <h2 id="module-b-title">Module B: Decision Checkpoints</h2>
+          <p class="muted">Milestone decision tracking</p>
+        </header>
+        <div id="module-b-container" class="placeholder" aria-label="Decision Checkpoints placeholder">
+          Decision Checkpoints will load here
+        </div>
+        <div class="actions" style="margin-top:10px;">
+          <button class="btn" data-open-modal="#modal-b">Open Module B Modal</button>
+        </div>
+      </section>
+
+      <!-- Module C: Velocity Banking Lite -->
+      <section id="module-c" class="module" aria-labelledby="module-c-title">
+        <header>
+          <h2 id="module-c-title">Module C: Velocity Banking Lite</h2>
+          <p class="muted">Cash-flow acceleration sandbox</p>
+        </header>
+        <div id="module-c-container" class="placeholder" aria-label="Velocity Banking Lite placeholder">
+          Velocity Banking Lite will load here
+        </div>
+        <div class="actions" style="margin-top:10px;">
+          <button class="btn" data-open-modal="#modal-c">Open Module C Modal</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Sticky compliance footer -->
+  <footer class="compliance" role="contentinfo" aria-label="Compliance footer">
+    <div class="container">
+      <div class="compliance-text">
+        For educational purposes only. Not financial, legal, or investment advice. Your use of this platform is subject to licensing terms.
+      </div>
+      <div>
+        <button id="dismiss-compliance" class="btn" type="button">Dismiss</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Module A Modal -->
+  <div id="modal-a" class="modal-backdrop" aria-hidden="true" role="dialog" aria-labelledby="modal-a-title" aria-modal="true">
+    <div class="modal">
+      <header><h3 id="modal-a-title">System Builder Map</h3></header>
+      <div class="content">
+        <p>Module A supporting dialog content.</p>
+      </div>
+      <footer>
+        <button class="btn primary" data-close-modal>Close</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Module B Modal -->
+  <div id="modal-b" class="modal-backdrop" aria-hidden="true" role="dialog" aria-labelledby="modal-b-title" aria-modal="true">
+    <div class="modal">
+      <header><h3 id="modal-b-title">Decision Checkpoints</h3></header>
+      <div class="content">
+        <p>Module B supporting dialog content.</p>
+      </div>
+      <footer>
+        <button class="btn primary" data-close-modal>Close</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Module C Modal -->
+  <div id="modal-c" class="modal-backdrop" aria-hidden="true" role="dialog" aria-labelledby="modal-c-title" aria-modal="true">
+    <div class="modal">
+      <header><h3 id="modal-c-title">Velocity Banking Lite</h3></header>
+      <div class="content">
+        <p>Module C supporting dialog content.</p>
+      </div>
+      <footer>
+        <button class="btn primary" data-close-modal>Close</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- First-load licensing modal -->
+  <div id="licensing-modal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-labelledby="licensing-title" aria-modal="true">
+    <div class="modal">
+      <header><h3 id="licensing-title">License Terms</h3></header>
+      <div class="content">
+        <p>By using this platform, you agree to the licensing terms and conditions applicable to your organization or individual use.</p>
+      </div>
+      <footer>
+        <button id="accept-license" class="btn primary" type="button">I Agree</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Scripts: order matters -->
+  <!-- 1) Main platform runtime -->
+  <script src="./js/platform.js" defer></script>
+  <!-- 2) Audio engine -->
+  <script src="./js/audio-engine.js" defer></script>
+  <!-- 3) Classroom mode controller -->
+  <script src="./js/classroom-mode.js" defer></script>
+  <!-- 4) Simulation modules: A, B, C -->
+  <script src="./js/module-a.js" defer></script>
+  <script src="./js/module-b.js" defer></script>
+  <script src="./js/module-c.js" defer></script>
+
+  <!-- Basic initialization (safe-guarded if scripts are absent) -->
+  <script>
+    (function () {
+      const $ = (sel, root = document) => root.querySelector(sel);
+      const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+      function toggleModal(backdrop, open) {
+        if (!backdrop) return;
+        backdrop.setAttribute('aria-hidden', open ? 'false' : 'true');
+        document.body.style.overflow = open ? 'hidden' : '';
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        // Platform runtime
+        if (window.Platform && typeof window.Platform.init === 'function') {
+          try { window.Platform.init({ root: document.getElementById('main') }); } catch (e) { console.warn('Platform.init error', e); }
+        }
+
+        // Audio engine
+        const audioEl = document.getElementById('audio-player');
+        const narratorSel = document.getElementById('narrator-select');
+        if (window.AudioEngine && typeof window.AudioEngine.init === 'function') {
+          try { window.AudioEngine.init({ audio: audioEl, narrator: narratorSel.value }); } catch (e) { console.warn('AudioEngine.init error', e); }
+        }
+        narratorSel.addEventListener('change', () => {
+          if (window.AudioEngine && typeof window.AudioEngine.setNarrator === 'function') {
+            try { window.AudioEngine.setNarrator(narratorSel.value); } catch (e) { console.warn('AudioEngine.setNarrator error', e); }
+          }
+        });
+
+        // Classroom mode toggle with visual feedback
+        const status = document.getElementById('classroom-status');
+        const toggle = document.getElementById('classroom-toggle');
+        const STORAGE_KEY = 'classroom_mode_enabled';
+        function setClassroom(active) {
+          status.dataset.active = String(!!active);
+          status.lastElementChild.textContent = 'Classroom Mode: ' + (active ? 'On' : 'Off');
+          toggle.setAttribute('aria-pressed', String(!!active));
+          if (window.ClassroomMode) {
+            try {
+              if (active && typeof window.ClassroomMode.enable === 'function') window.ClassroomMode.enable();
+              if (!active && typeof window.ClassroomMode.disable === 'function') window.ClassroomMode.disable();
+            } catch (e) { console.warn('ClassroomMode toggle error', e); }
+          }
+        }
+        const saved = localStorage.getItem(STORAGE_KEY);
+        setClassroom(saved === '1');
+        toggle.addEventListener('click', () => {
+          const next = status.dataset.active !== 'true';
+          localStorage.setItem(STORAGE_KEY, next ? '1' : '0');
+          setClassroom(next);
+        });
+
+        // Module initialization
+        const modAEl = document.getElementById('module-a-container');
+        const modBEl = document.getElementById('module-b-container');
+        const modCEl = document.getElementById('module-c-container');
+        if (window.ModuleA && typeof window.ModuleA.init === 'function') {
+          try { window.ModuleA.init({ mount: modAEl }); } catch (e) { console.warn('ModuleA.init error', e); }
+        }
+        if (window.ModuleB && typeof window.ModuleB.init === 'function') {
+          try { window.ModuleB.init({ mount: modBEl }); } catch (e) { console.warn('ModuleB.init error', e); }
+        }
+        if (window.ModuleC && typeof window.ModuleC.init === 'function') {
+          try { window.ModuleC.init({ mount: modCEl }); } catch (e) { console.warn('ModuleC.init error', e); }
+        }
+
+        // Simple modal wiring
+        $$('[data-open-modal]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const sel = btn.getAttribute('data-open-modal');
+            toggleModal($(sel), true);
+          });
+        });
+        $$('[data-close-modal]').forEach(btn => {
+          btn.addEventListener('click', () => toggleModal(btn.closest('.modal-backdrop'), false));
+        });
+        $$('.modal-backdrop').forEach(backdrop => {
+          backdrop.addEventListener('click', (e) => { if (e.target === backdrop) toggleModal(backdrop, false); });
+        });
+
+        // Licensing modal (first load only)
+        const LIC_KEY = 'license_accepted_v1';
+        const licModal = document.getElementById('licensing-modal');
+        const licBtn = document.getElementById('accept-license');
+        if (localStorage.getItem(LIC_KEY) !== '1') toggleModal(licModal, true);
+        licBtn.addEventListener('click', () => { localStorage.setItem(LIC_KEY, '1'); toggleModal(licModal, false); });
+
+        // Compliance footer dismiss (per session)
+        const dismiss = document.getElementById('dismiss-compliance');
+        const footer = document.querySelector('footer.compliance');
+        dismiss.addEventListener('click', () => footer.style.display = 'none');
+      });
+    })();
+  </script>
+</body>
+</html>

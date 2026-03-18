@@ -69,29 +69,65 @@
             color: var(--text-muted);
         }
 
-        /* --- HEADER --- */
+        /* --- DASHBOARD NAVIGATION STYLE --- */
         header {
+            background: #0f172a;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 12px 0;
             position: sticky;
             top: 0;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 100;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding: 15px 0;
+            z-index: 1000;
         }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
+        .z-nav-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr; 
             align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        .logo {
-            font-size: 1.5rem;
+        .z-logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-decoration: none;
             font-weight: 800;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 1.1rem;
+            justify-self: start;
+        }
+
+        .z-logo-group img {
+            height: 32px;
+            border-radius: 4px;
+        }
+
+        .nav-center-title {
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            text-align: center;
+            justify-self: center;
+        }
+
+        .backdoor-exit {
+            justify-self: end;
+            color: #facc15; 
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        @media (max-width: 768px) {
+            .nav-center-title { font-size: 14px; }
+            .z-logo-group span, .backdoor-exit span { display: none; }
         }
 
         /* --- HERO SECTION --- */
@@ -167,7 +203,32 @@
             outline: none;
             border-color: var(--primary);
         }
+        /* --- CHECKBOX STYLING --- */
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 15px;
+    text-align: left;
+}
 
+.checkbox-group input[type="checkbox"] {
+    width: 20px !important;
+    min-height: 20px !important;
+    margin-top: 4px;
+    cursor: pointer;
+}
+
+.checkbox-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.checkbox-text a {
+    color: var(--primary);
+    text-decoration: underline;
+}
         /* --- MODAL (DISCLAIMER) --- */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
@@ -181,6 +242,34 @@
         @media (min-width: 768px) {
             .hero h1 { font-size: 3.5rem; }
             .grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        
+        /* --- DASHBOARD FOOTER STYLE --- */
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 13px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 40px;
+        }
+
+        footer a {
+            color: #60a5fa;
+            margin: 0 10px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: #ffffff;
+        }
+
+        .footer-copyright {
+            margin-bottom: 10px;
+            display: block;
         }
     </style>
 </head>
@@ -197,11 +286,18 @@
     </div>
 
     <header>
-        <div class="container">
-            <nav>
-                <div class="logo">Digital Marketing Network | MicroBurstMedia</div>
-                <a href="https://www.instagram.com/microburstmedia" class="btn btn-outline" style="padding: 8px 16px; min-height: auto; font-size: 0.8rem;">Business Center</a>
-            </nav>
+        <div class="z-nav-container">
+            <a href="https://microburstmedia.github.io/digital-marketing-network/" class="z-logo-group">
+                <img src="https://cdn.launchcart.com/s47561/1695846294-bb2c7ca6-3563-4ba6-a820-11297c768cd2-thumb.png" alt="MBM Logo"> 
+                <span>MBMN</span>
+            </a>
+
+            <h1 class="nav-center-title">AI Automation Learning Hub</h1>
+
+            <a href="https://microburstmedia.github.io/digital-marketing-network/" class="backdoor-exit">
+                <span>Exit to Main Site</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            </a>
         </div>
     </header>
 
@@ -238,7 +334,7 @@
 
     <section class="contact-section" id="contactForm">
         <div class="container" style="text-align: center;">
-            <h2 style="margin-bottom: 30px;">Request for Web Automation Details</h2>
+            <h2 style="margin-bottom: 30px;">Request for AI Automation Guide</h2>
             
             <form id="googleSheetForm" class="glass-form">
                 <div class="form-group">
@@ -250,19 +346,27 @@
                     <input type="email" name="email" required placeholder="john@example.com">
                 </div>
                 <div class="form-group">
-                    <label>Business Web Link? (Optional)</label>
-                    <textarea name="message" rows="4" required placeholder="If you would like to get your business featured on a business publishing website please provide your business website link as shown here: [https://www.johndoe.com] don't have one enter 'Not applicable'... "></textarea>
-                </div>
+    <label class="checkbox-group">
+        <input type="checkbox" name="agreement" required>
+        <span class="checkbox-text">
+            I acknowledge that this platform provides referral resources only. I am solely responsible for my independent decisions and agree to the 
+            <a href="https://drive.google.com/file/d/1ajQlMeWCI-BpHn43ztnWC-OLXPfk1I_3/view?usp=sharing" target="_blank">Terms & Conditions</a>.
+        </span>
+    </label>
+</div>
                 <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%;">Submit to Request Details</button>
                 <p id="formStatus" style="margin-top: 15px; font-weight: 600; display: none;"></p>
             </form>
         </div>
     </section>
 
-    <footer style="text-align: center; padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-size: 0.9rem;">
-        <div class="container">
-            <p>&copy; 2026 MicroBurstMedia. All rights reserved.</p>
-        </div>
+    <footer>
+        <span class="footer-copyright">© 2026 Digital Marketing Network, MicroBurstMedia</span>
+        
+        <a onclick="alert('Affiliate Disclosure: We may receive compensation for certain referrals.')">Affiliate Disclosure</a> |
+        <a onclick="alert('Privacy Policy: We collect minimal data for referral routing purposes only.')">Privacy Policy</a> |
+        <a onclick="alert('Terms of Service: Use of this platform constitutes agreement to this website\'s policies.')">Terms of Service</a> |
+        <a onclick="alert('Legal Disclaimer: We do not provide financial, legal, or employment advice.')">Legal Disclaimer</a>
     </footer>
 
  <script>

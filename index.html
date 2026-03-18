@@ -229,14 +229,6 @@
     color: var(--primary);
     text-decoration: underline;
 }
-        /* --- MODAL (DISCLAIMER) --- */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-        }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-content {
-            background: var(--bg-card); padding: 30px; border-radius: 16px; max-width: 500px; width: 90%; text-align: center; border: 1px solid var(--accent);
-        }
 
         /* --- DESKTOP QUERIES --- */
         @media (min-width: 768px) {
@@ -274,16 +266,6 @@
     </style>
 </head>
 <body>
-
-    <div id="disclaimerModal" class="modal-overlay">
-        <div class="modal-content">
-            <h2 style="margin-bottom: 15px;">Welcome this Site is Operated and Managed by Digital Marketing Network, MicroBurstMedia</h2>
-            <p style="color: var(--text-muted); margin-bottom: 25px;">
-                By proceeding, you agree to the terms and policy agreements of this digital marketing network's website platform. Disclaimer: We may earn a small commission for qualified purchases.
-            </p>
-            <button class="btn btn-primary" onclick="closeModal()">Proceed to Website</button>
-        </div>
-    </div>
 
     <header>
         <div class="z-nav-container">
@@ -370,14 +352,8 @@
     </footer>
 
  <script>
-    // 1. MODAL LOGIC
-    document.addEventListener('DOMContentLoaded', function() {
-        const modal = document.getElementById('disclaimerModal');
-        if (modal) setTimeout(() => { modal.classList.add('active'); }, 500);
-    });
-    function closeModal() { document.getElementById('disclaimerModal').classList.remove('active'); }
 
-    // 2. FORM LOGIC (CONSOLIDATED)
+    // 1. FORM LOGIC (CONSOLIDATED)
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxua0awPLA7TPYZKdiD5d_PqamGDfN9SOZqJiNZrfkOPvdhVqWYrB7mK9KBrmIMuI_Z/exec';
     const form = document.getElementById('googleSheetForm'); // MUST MATCH FORM ID
     const btn = document.getElementById('submitBtn');

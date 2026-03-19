@@ -265,31 +265,27 @@
 
        /* Adjusts the Hero text for smaller screens */
         @media (max-width: 768px) {
-            .hero {
-                padding: 60px 0;
-                min-height: auto;
-            }
-            .hero h1 {
-                font-size: 2rem;
-            }
-            .hero p {
-                font-size: 1rem;
-                padding: 0 10px;
-            }
-            
-            /* Stacks the Learning Cards vertically on mobile */
-            .grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-                padding: 0 10px;
-            }
+    .hero h1 { 
+        font-size: 1.8rem; /* Slightly smaller to prevent awkward line breaks */
+        padding: 0 15px;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+        line-height: 1.5;
+        margin-bottom: 30px;
+    }
 
-            /* Makes the form slightly more compact on mobile */
-            .glass-form {
-                padding: 25px 20px;
-                margin: 0 10px;
-            }
-        }
+    .grid {
+        gap: 25px; /* Tighter gap for mobile scrolling */
+        margin-top: 40px;
+    }
+
+    .glass-form {
+        padding: 30px 20px;
+        width: 95%; /* Ensures it doesn't hit the screen edges */
+    }
+}
 
         /* Desktop Grid (3 Columns) */
         @media (min-width: 769px) {
